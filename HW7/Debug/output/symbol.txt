@@ -70,18 +70,28 @@
 00000470 T DRV_PutStr	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:203
 000004a2 T DRV_IntToStr	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:218
 00000668 T DRV_Printf	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:304
-0000083c T sound1	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:358
-000008cc T main	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:382
-00000968 T memcpy
-0000097c T memset
-00000c20 A __data_lmastart
+0000083c T song	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:375
+000008cc T read_key_matrix	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:400
+000009be T sound	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:436
+00000a1e T record	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:443
+00000a46 T play	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:449
+00000ae4 T main	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:465
+00000c18 T memcpy
+00000c2c T memset
+00000ed0 A __data_lmastart
 00100200 D __data_start
-00100200 D duration	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:357
-00100204 B __bss_start
-00100204 B _edata
-00100204 B _lmaend
-00100204 B u8TxdBuf	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:179
-00100208 W _FP_BASE_
-00100208 W _SDA_BASE_
-0010021c B _end
+00100200 D duration	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:365
+00100204 D key	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:366
+00100208 D flag	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:366
+0010020c D pitch	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:367
+00100260 B __bss_start
+00100260 B _edata
+00100260 B _lmaend
+00100260 B chart	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:372
+00100300 W _FP_BASE_
+00100300 W _SDA_BASE_
+001003f0 B u8TxdBuf	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:179
+00100408 B _end
+00100408 C tmp	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:366
+0010040c C col	/cygdrive/c/WorkSpace/AndeSight/HW7/Debug/../main.c:366
 00103000 A _stack

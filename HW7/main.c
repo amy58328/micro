@@ -354,8 +354,25 @@ void DRV_Printf(char *pFmt, U16 u16Val)
 #define PWM8			*((volatile unsigned int *)0x00208C58)
 #define PERIOD_8		*((volatile unsigned int *)0x00208C88)
 
+
+typedef struct data
+{
+	int kk;
+	int pp;
+}Data;
+
+
 int duration = 300000;
-void sound1()
+int key = 0xFF,tmp,col,flag = 1 ;
+int pitch[3][7] = {
+	{{NOTE_C4},{NOTE_D4},{NOTE_E4},{NOTE_F4},{NOTE_G4},{NOTE_A4},{NOTE_B4}},
+	{{NOTE_C5},{NOTE_D5},{NOTE_E5},{NOTE_F5},{NOTE_G5},{NOTE_A5},{NOTE_B5}},
+	{{NOTE_C6},{NOTE_D6},{NOTE_E6},{NOTE_F6},{NOTE_G6},{NOTE_A6},{NOTE_B6}},
+};
+int chart[50][2];
+
+
+void song()
 {
 	int music [][2]= {{NOTE_G4,1},{NOTE_C5,1},{NOTE_C5,1},{NOTE_E5,1},{NOTE_D5,1},{NOTE_C5,2},
 						{NOTE_C5,1},{NOTE_G4,1},{NOTE_C5,1},{NOTE_E5,1},{NOTE_G5,1},{NOTE_G5,1},{NOTE_C5,2},
@@ -368,17 +385,83 @@ void sound1()
 			};
 
 	int i;
-	//¼½¥X¹w¿ýªººq
+	//翹翻瞼X繒w聶羸穠繙繙q
 	for(i=0;i<sizeof music/sizeof music[0];i++){
-		PERIOD_8 = 200000 / music[i][0];
-		PWM8 = (int) PERIOD_8 / 100;
-		delay1(duration*music[i][1]);
+		PERIOD_8 = 200000 / music[i][0]; // �喲�
+		PWM8 = (int) PERIOD_8 / 100; 	 // �喲�
+		delay1(duration*music[i][1]);	 // �瑕漲
 
 		//delay duty cycle = 0
 		PWM8 = 0;
 		delay1( ONE_SECOND/100);
 	}
 }
+
+void read_key_matrix()
+{
+	key = 0xFF;
+	GPIO_PTA_DIR = 0x0FF0;
+	GPIO_PTA_CFG = 0x0000;
+	for (col=0; col<4; col++)
+	{
+		GPIO_PTA_BS = 0x000F;
+		GPIO_PTA_BR = 0x0000 | (1 << col);
+		tmp = ((~GPIO_PTA_PADIN) & 0xFF0) >> 4;
+		if (tmp > 0)//read Key Matrix
+		{
+			if (tmp & 0x1)
+				key = 0*4 + col +1;
+			else if (tmp & 0x2)
+				key = 1*4 + col +1;
+			else if (tmp & 0x4)
+				key = 2*4 + col+1;
+			else if (tmp & 0x8)
+				key = 3*4 + col+1;
+			break;
+		}
+	}
+
+	if (key != 0xFF && flag == 1)
+	{
+		flag = 0; // separate the Key Matrix
+	}
+
+	if(key == 0xFF )
+	{
+		flag = 1;
+	}
+
+}
+
+void sound(int k,int p)
+{
+	PERIOD_8 = 200000 / pitch[p][k-1]; 
+	PWM8 = (int) PERIOD_8 / 100; 	
+	delay1(duration*1);	 // �瑕漲
+}
+
+void record(int k,int p ,int index)
+{
+	chart[index][0] = k;
+	chart[index][1] = p;
+}
+
+void play(int index)
+{	
+	int i;
+	for(i=0;i<index;i++)
+	{
+		int temp = pitch[chart[i][1]][chart[i][0]-1];
+		PERIOD_8 = 200000 / temp ; // �喲�
+		PWM8 = (int) PERIOD_8 / 100; 	 // �喲�
+		delay1(duration*1);	 // �瑕漲
+
+		//delay duty cycle = 0
+		PWM8 = 0;
+		delay1( ONE_SECOND/100);
+	}
+}
+
 int main()
 {
 	OS_PowerOnDriverInitial();
@@ -397,10 +480,65 @@ int main()
 
 	PWM_BAS_CLK = 0x01;
 	PWM_CLK8 = 60;
-	PWM8 = 0xFF;
+	PWM8 = 0x0;
 	PWM_EN = 0x100; //PWM8
 
-	sound1();
+	// sound1();
+	int pitch_index = 1;
+	int fuck = 0;
+	int index = 0 ;
+
+	while(1)
+	{
+		read_key_matrix();
+
+		if(key == 0xFF)
+		{
+			PWM8 = 0x0;
+		}
+
+		if(key <= 7 && key >= 1)
+		{
+			sound(key,pitch_index);
+			if(fuck == 1)
+			{
+				record(key,pitch_index,index);
+				index += 1;
+			}
+		}
+
+		if(key <= 11 && key >= 9)
+		{
+			pitch_index = key - 9;
+		}
+
+		if(key == 13)
+		{
+			delay1(duration);
+			if(fuck == 0)
+			{
+				index = 0;
+				fuck = 1;
+			}
+			else if(fuck == 1)
+			{
+				fuck = 0;
+			}
+		}
+
+		if(key == 14)
+		{
+			play(index);
+		}
+
+		if(key == 15)
+		{
+			song();
+		}
+
+		
+
+	}	
 
 	DRV_Printf("====================================\r\n", 0);
 
